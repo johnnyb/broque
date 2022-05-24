@@ -14,6 +14,9 @@ Whether or not it goes beyond that, we'll see.
 
 The goal will be for usage in a private Kubernetes network, though it should be runnable without Kubernetes as well.
 
+I'm labeling this as an "enterprise" message queue not because of its massive scale/bandwidth, but because it is a data-processing-oriented message queue.  
+I.e., it is for permanent data stores, not speed-handling on live events.
+
 ## API
 
 The API is straightforward.

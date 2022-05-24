@@ -6,6 +6,9 @@ Rails.application.routes.draw do
   namespace :v1 do 
 	resources :channels do
 		resources :subscriptions do
+			member do
+				put :reset
+			end
 			resources :messages do 
 				member do
 					put :complete
@@ -13,6 +16,9 @@ Rails.application.routes.draw do
 			end
 		end
 		resources :cursors do 
+			member do 
+				put :reset
+			end
 			resources :messages do
 				member do 
 					put :complete 

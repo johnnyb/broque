@@ -14,6 +14,12 @@ class MessageCursor < ApplicationRecord
 		return 30.seconds
 	end
 
+	def reset_to!(msg_id)
+		self.last_message_id = msg_id 
+		self.save!
+		ActiveReading.where(:message_cursor => self, :message_id => (msg_id || 0)..).delete_all
+	end
+
 	def as_json(opts = {})
 		data = super(opts)
 		data["id"] = data["id"].to_s 

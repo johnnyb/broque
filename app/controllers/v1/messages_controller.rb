@@ -6,40 +6,59 @@ class V1::MessagesController < ApplicationController
 		should_update_cursor = true
 		autoremove = interpret_boolean(params[:autoremove])
 		max_messages = params[:max_messages] || @message_cursor.default_max_messages
+
         MessageCursor.transaction do
 			@message_cursor.lock!
 
+			# Find relevant messages
             @messages = Message.available_to_cursor(@message_cursor).limit(max_messages)
 
+			# Mark them as being read
 			unless autoremove
 				@messages.each do |msg|
-					@message_cursor.active_readings.create!(
-						:message => msg,
-						:expires_at => Time.now + @message_cursor.default_read_timeout
-					)
+					reading = @message_cursor.active_readings.find_or_create_by(
+						:message => msg
+					) 
+					reading.expires_at = Time.now + @message_cursor.default_read_timeout
+					reading.save!
 				end
 			end
+
+			# Get the rendered data
+			message_data = render_message_json(@messages)
+
+			# Update the cursor
+			if message_data.size > 0
+				tmp_id = message_data.last["id"].to_i
+				if (@message_cursor.last_message_id || 0) < tmp_id
+					@message_cursor.update!(
+						:last_message_id => tmp_id
+					)
+				end 
+			end
+
+			# Send data
+			render :json => message_data
         end
-		render :json => render_message_json(@messages)
     end
 
 	def show 
-		return :json => render_message_json(@message)
+		render :json => render_message_json(@message)
 	end
 
 	def complete
-		@message_cursor.active_readings.where(:message_id => params[:message_id])
+		@message_cursor.active_readings.where(:message_id => params[:message_id]).destroy_all
 	end
 
     def create
         Message.transaction do
-            @message = @channel.message.create!(
+            @message = @channel.messages.create!(
                 :message_reference => SecureRandom.uuid,
-                :message_origination_reference => (params[:message_origination_reference] || SecureRanodm.uuid),
+                :message_origination_reference => (params[:message_origination_reference] || SecureRandom.uuid),
                 :publisher_uid => current_uid,
                 :message => params[:message] || request.raw_post
             )
-            params[:attributes].each do |k, v|
+            (params[:attributes] || {}).each do |k, v|
                 @message.message_attributes.create!(
                     :key => k, 
                     :value => v

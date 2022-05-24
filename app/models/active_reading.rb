@@ -3,9 +3,8 @@ class ActiveReading < ApplicationRecord
 	belongs_to :message
 
 	scope :needs_rereading_for_cursor, ->(cursor){
-		where(
-			:message_cursor => cursor, 
-			:completed_at => nil, 
+		select(:message_id).where(
+			:message_cursor => cursor,
 			:expires_at => ..Time.now
 		)
 	}

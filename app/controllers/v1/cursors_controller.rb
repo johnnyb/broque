@@ -12,9 +12,7 @@ class V1::CursorsController < ApplicationController
 	def reset 
 		MessageCursor.transaction do
 			@message_cursor.lock!
-			@message_cursor.update!(
-				:last_message_id => params[:last_message_id]
-			)
+			@message_cursor.reset_to!(params[:last_message_id])
 		end
 	end
 

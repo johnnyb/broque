@@ -50,7 +50,6 @@ class GenerateInitialTables < ActiveRecord::Migration[7.0]
 		t.references :message_cursor
 		t.references :message 
 		t.timestamp :expires_at
-		t.timestamp :completed_at
 
 		t.timestamps
 	end

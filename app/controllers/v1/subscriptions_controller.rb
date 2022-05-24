@@ -3,21 +3,20 @@ class V1::SubscriptionsController < ApplicationController
 
     def create
         Subscription.transaction do 
-			last_message_id = params[:starting_from_message_id] || @channel.messages.last.try(:id)
-            @message_cursor = @channel.message_cursors.create!(
-                :originator_uid => current_uid,
-				:last_message_id => last_message_id
-            )
-            @subscription = @channel.subscriptions.create!(
-                :subscriber_uid => current_uid,
-                :name => params[:name],
-                :default_message_cursor => @message_cursor,
-            )
+			
         end
         render :json => @subscription
     end
 
 	def show 
+	end
+
+	def reset 
+		@message_cursor = @subscription.default_message_cursor
+		MessageCursor.transaction do
+			@message_cursor.lock!
+			@message_cursor.reset_to!(params[:last_message_id])
+		end
 	end
 
 	protected
@@ -26,7 +25,7 @@ class V1::SubscriptionsController < ApplicationController
         @channel = Channel.autocreating_name_lookup(current_uid, params[:channel_id])
         raise "Channel not found" if @channel.nil?
 
-		@subscription = Subscription.autocreating_name_lookup(@channel, current_uid, params[:subscription_id])
+		@subscription = Subscription.autocreating_name_lookup(@channel, current_uid, params[:id])
 		raise "Subscription not found" if @subscription.nil?
     end
 end

@@ -1,9 +1,15 @@
 class ApplicationController < ActionController::API
-    def current_uid 
+	protected 
+
+	def current_uid 
         "none"
     end
 
-    def has_permission?(name)
+    def has_permission?(ctx, perm)
         return true
     end
+
+	def interpret_boolean(val)
+		ActiveModel::Type::Boolean.new.cast(val)
+	end
 end

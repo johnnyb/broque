@@ -45,5 +45,16 @@ class GenerateInitialTables < ActiveRecord::Migration[7.0]
 
       t.timestamps
     end
+
+	create_table :active_readings do |t|
+		t.references :message_cursor
+		t.references :message 
+		t.timestamp :expires_at
+		t.timestamp :completed_at
+
+		t.timestamps
+	end
+	add_index :active_readings, [:message_cursor_id, :message_id], :unique => true
+	add_index :active_readings, [:message_cursor_id, :expires_at]
   end
 end

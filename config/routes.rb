@@ -5,6 +5,8 @@ Rails.application.routes.draw do
   # root "articles#index"
   namespace :v1 do 
 	resources :channels do
+		resources :messages 
+		
 		resources :subscriptions do
 			member do
 				put :reset

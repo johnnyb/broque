@@ -81,10 +81,9 @@ class V1::MessagesController < ApplicationController
 			@subscription = Subscription.autocreating_name_lookup(@channel, current_uid, params[:subscription_id])
 			@message_cursor = @subscription.default_message_cursor 
 		end
-		raise "Cursor not found" if @message_cursor.nil?
 
 		if params[:id].present?
-			@message = @message_cursor.channel.messages.find(params[:id])
+			@message = @channel.messages.find(params[:id])
 		end
     end
 

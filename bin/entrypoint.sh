@@ -6,8 +6,8 @@ MODE=$1
 export RAILS_ENV=production
 
 # Check special run modes
-if [[ "$MODE" == "shell" ]]; then
-  exec /bin/sh
+if [ "$MODE" = "shell" ]; then
+  exec /bin/bash
 fi
 
 exec bundle exec rails server

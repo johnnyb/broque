@@ -1,9 +1,9 @@
-FROM --platform=linux/amd64 ruby:3-alpine
+FROM ruby:3
 
 WORKDIR /app
 
 COPY . .
 
-RUN bin/docker_alpine_install.sh
+RUN bundle install
 
-ENTRYPOINT /app/bin/entrypoint.sh
+ENTRYPOINT ["/app/bin/entrypoint.sh"]

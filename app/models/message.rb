@@ -1,7 +1,7 @@
 class Message < ApplicationRecord
 	belongs_to :channel 
 	has_many :message_metadata
-	has_many :active_readings
+	has_many :active_readings, :dependent => :delete_all
 
 	scope :available_to_cursor, ->(cursor){
 		min_message_id = (cursor.last_message_id || 0) + 1

@@ -15,7 +15,6 @@ ActiveRecord::Schema[7.0].define(version: 2022_05_24_033456) do
     t.integer "message_cursor_id"
     t.integer "message_id"
     t.datetime "expires_at", precision: nil
-    t.datetime "completed_at", precision: nil
     t.datetime "created_at", null: false
     t.datetime "updated_at", null: false
     t.index ["message_cursor_id", "expires_at"], name: "index_active_readings_on_message_cursor_id_and_expires_at"

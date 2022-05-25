@@ -3,7 +3,18 @@ class V1::ChannelsController < ApplicationController
     before_action :setup_channel
 
     def create
+		update
     end 
+
+	def update 
+		@channel.update!(params.slice(
+			"expire_messages", 
+			"force_message_expiration_time", 
+			"default_max_reads", 
+			"default_read_timeout"
+		))
+		render :json => @channel
+	end
 
 	protected 
 

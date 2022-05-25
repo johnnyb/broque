@@ -1,6 +1,6 @@
 class Subscription < ApplicationRecord
 	belongs_to :channel
-	belongs_to :default_message_cursor, :class_name => "MessageCursor", :foreign_key => "default_message_cursor_id"
+	belongs_to :default_message_cursor, :class_name => "MessageCursor", :foreign_key => "default_message_cursor_id", :dependent => :destroy
 
 	scope :for_uid, ->(uid) { } # Not currently checking permissions
 

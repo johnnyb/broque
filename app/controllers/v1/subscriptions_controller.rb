@@ -2,6 +2,7 @@ class V1::SubscriptionsController < ApplicationController
 	before_action :setup_channel 
 
     def create
+		update
         Subscription.transaction do 
 			if params[:last_message_id].present?
 				@subscription.last_message_id = params[:last_message_id]
@@ -10,6 +11,21 @@ class V1::SubscriptionsController < ApplicationController
         end
         render :json => render_subscription_json(@subscription)
     end
+
+	def update
+		@subscription.default_message_cursor.update!(params.slice(
+			"last_message_id",
+			"default_max_reads",
+			"default_read_timeout"
+		))
+		render :json => @subscription
+	end
+
+	def destroy
+		MessageCursor.transaction do
+			@subscription.destroy
+		end
+	end
 
 	def show 
 		render :json => render_subscription_json(@subscription)
@@ -28,7 +44,7 @@ class V1::SubscriptionsController < ApplicationController
 	protected
 
 	def render_subscription_json(subscr)
-		return subscr.as_json(:include => {:default_message_cursor => {}})
+		return subscr.as_json().merge(subscr.default_message_cursor.as_json)
 	end
 
 	def setup_channel

@@ -1,7 +1,7 @@
 class MessageCursor < ApplicationRecord
 	belongs_to :channel
 
-	has_many :active_readings
+	has_many :active_readings, :dependent => :delete_all
 	# NOTE - last_message_id generally refers to a actual message, but we aren't going to do a belongs_to because we don't actually care
 
 	scope :for_uid, ->(uid) { } # Not currently checking permissions

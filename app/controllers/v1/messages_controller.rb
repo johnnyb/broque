@@ -14,12 +14,31 @@ class V1::MessagesController < ApplicationController
             @messages = Message.available_to_cursor(@message_cursor).limit(max_messages)
 
 			# Mark them as being read
-			unless autoremove
+			if autoremove
+				# On autoremove, if there is an outstanding reading for this message, delete it
+				@messages.each do |msg|
+					reading = @message_cursor.active_readings.where(
+						:message => msg
+					).delete_all
+				end
+			else
+				# On non-autoremove, create an "active reading" for each message
 				@messages.each do |msg|
 					reading = @message_cursor.active_readings.find_or_create_by(
 						:message => msg
-					) 
+					)
+					reading.max_reads = @message_cursor.default_max_reads
+					reading.read_count += 1
 					reading.expires_at = Time.now + @message_cursor.default_read_timeout
+
+					# Check for message death
+					if (reading.max_reads || 0) > 0
+						# NOTE - this doesn't technically kill the message until we hit expires_at
+						if reading.read_count == reading.max_reads 
+							reading.died = true
+						end
+					end
+
 					reading.save!
 				end
 			end
@@ -41,6 +60,27 @@ class V1::MessagesController < ApplicationController
 			render :json => message_data
         end
     end
+
+	def dead
+		last_message_id = params[:last_message_id] || 0
+		max_messages = params[:max_messages] || @message_cursor.default_max_messages
+		@dead_messages = @message_cursor.active_readings.dead.where(:message_id => last_message_id..).limit(max_messages)
+		render :json => @dead_messages
+	end
+
+	def clear_dlq
+		MessageCursor.transaction do
+			@message_cursor.lock!
+			@message_cursor.active_readings.dead.delete_all
+		end
+	end
+
+	def redrive_dlq
+		MessageCursor.transaction do
+			@message_cursor.lock!
+			@message_cursor.active_readings.dead.update_all(:died => false, :read_count => 0)
+		end
+	end
 
 	def show 
 		render :json => render_message_json(@message)

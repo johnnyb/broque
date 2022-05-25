@@ -15,6 +15,9 @@ ActiveRecord::Schema[7.0].define(version: 2022_05_24_033456) do
     t.integer "message_cursor_id"
     t.integer "message_id"
     t.datetime "expires_at", precision: nil
+    t.boolean "died", default: false
+    t.integer "read_count", default: 0
+    t.integer "max_reads"
     t.datetime "created_at", null: false
     t.datetime "updated_at", null: false
     t.index ["message_cursor_id", "expires_at"], name: "index_active_readings_on_message_cursor_id_and_expires_at"
@@ -26,6 +29,10 @@ ActiveRecord::Schema[7.0].define(version: 2022_05_24_033456) do
   create_table "channels", force: :cascade do |t|
     t.string "name"
     t.string "owner_uid"
+    t.boolean "expire_messages", default: false
+    t.integer "force_message_expiration_time"
+    t.integer "default_max_reads"
+    t.integer "default_read_timeout"
     t.datetime "created_at", null: false
     t.datetime "updated_at", null: false
     t.index ["name"], name: "index_channels_on_name", unique: true
@@ -36,6 +43,8 @@ ActiveRecord::Schema[7.0].define(version: 2022_05_24_033456) do
     t.string "originator_uid"
     t.integer "channel_id"
     t.integer "last_message_id"
+    t.integer "default_max_reads"
+    t.integer "default_read_timeout"
     t.datetime "created_at", null: false
     t.datetime "updated_at", null: false
     t.index ["channel_id"], name: "index_message_cursors_on_channel_id"
@@ -54,7 +63,7 @@ ActiveRecord::Schema[7.0].define(version: 2022_05_24_033456) do
     t.string "message_origination_reference"
     t.string "message_reference"
     t.string "publisher_uid"
-    t.binary "message"
+    t.text "message"
     t.datetime "created_at", null: false
     t.datetime "updated_at", null: false
     t.index ["channel_id", "id"], name: "index_messages_on_channel_id_and_id"

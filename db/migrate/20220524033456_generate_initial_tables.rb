@@ -4,6 +4,16 @@ class GenerateInitialTables < ActiveRecord::Migration[7.0]
       t.string :name
       t.string :owner_uid
 
+	  #### Configuration ####
+	  # Should I expire messages when they are all-the-way read?
+	  t.boolean :expire_messages, :default => false
+	  # Should I force a message to expire after a certain time even if unread?
+	  t.integer :force_message_expiration_time
+	  # How many readys before it is DLQd? (copied to cursor)
+	  t.integer :default_max_reads
+	  # On a message poll, ignore all messages that are more than this old (copied to cursor)
+	  t.integer :default_read_timeout
+
       t.timestamps
     end
     add_index :channels, :name, :unique => true
@@ -43,6 +53,9 @@ class GenerateInitialTables < ActiveRecord::Migration[7.0]
       t.references :channel
       t.references :last_message
 
+	  t.integer :default_max_reads
+	  t.integer :default_read_timeout
+
       t.timestamps
     end
 
@@ -50,6 +63,9 @@ class GenerateInitialTables < ActiveRecord::Migration[7.0]
 		t.references :message_cursor
 		t.references :message 
 		t.timestamp :expires_at
+		t.boolean :died, :default => false
+		t.integer :read_count, :default => 0
+		t.integer :max_reads		
 
 		t.timestamps
 	end

@@ -87,7 +87,7 @@ class V1::MessagesController < ApplicationController
 	end
 
 	def complete
-		@message_cursor.active_readings.where(:message_id => params[:message_id]).destroy_all
+		@message_cursor.active_readings.where(:message_id => params[:message_id]).delete_all
 	end
 
     def create

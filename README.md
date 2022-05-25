@@ -1,4 +1,4 @@
-!["broQue Logo - empty wallet"]("docs/images/logos/Cartoon_Woman_Without_Money_Left_In_Her_Wallet.svg")
+!["broQue Logo - empty wallet"](docs/images/logos/Cartoon_Woman_Without_Money_Left_In_Her_Wallet.svg?raw=true)
 
 # broQue: The Poor Man's Enterprise Message Bus
 

@@ -19,4 +19,12 @@ class Message < ApplicationRecord
 
 		return data
 	end
+
+	def metadata
+		data = {}
+		message_metadata.each do |mm|
+			data[mm.key] = mm.value
+		end
+		return data
+	end
 end

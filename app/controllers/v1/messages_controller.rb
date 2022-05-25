@@ -58,8 +58,8 @@ class V1::MessagesController < ApplicationController
                 :publisher_uid => current_uid,
                 :message => params[:message] || request.raw_post
             )
-            (params[:attributes] || {}).each do |k, v|
-                @message.message_attributes.create!(
+            (params[:metadata] || {}).each do |k, v|
+                @message.message_metadata.create!(
                     :key => k, 
                     :value => v
                 )
@@ -89,6 +89,6 @@ class V1::MessagesController < ApplicationController
 
 	def render_message_json(msg, opts = {})
 		return msg.as_json(:only => [:id, :publisher_uid, :created_at, :updated_at]) if opts[:headers_only]
-		return msg.as_json
+		return msg.as_json(:methods => [:metadata])
 	end
 end

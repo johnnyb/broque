@@ -1,21 +1,22 @@
-# broQue - a new enterprise message queue
+!["broQue Logo - empty wallet"]("docs/images/logos/Cartoon_Woman_Without_Money_Left_In_Her_Wallet.svg")
 
-This is a new enterprise message queue.
-I know there's already a lot of them around.
-I wrote this one for a few reasons:
+# broQue: The Poor Man's Enterprise Message Bus
 
-1. Most message queues are a pain to install and get running.
-2. Most message queues don't realize that all other queue types are just degenerate forms of a stored pub/sub queue.
-3. I couldn't stop thinking about it.
+broQue aims to be an enterprise message bus which is extremely simple to deploy and use, but has all of the features you need.
+Most message queueing software tries to be the fastest, most high-throughput.
+That's not what I'm aiming for, here.
 
-This does not aim to be the fastest or handle the most messages.
-Its first claim to fame will be that it is dead simple to install and very reliable for small to medium sizes workloads.
-Whether or not it goes beyond that, we'll see.
+Project Goals:
+1. Simplicity of deployment
+2. Simplicity of development
+3. Stability/reliability/durability of messaging
 
-The goal will be for usage in a private Kubernetes network, though it should be runnable without Kubernetes as well.
+The key differentiator of broQue is that ALL queues (we call them *channels*) are stored pub/sub channels.
+This means that once a message is published, it is permanently available by default.
+You have to configure the channel if you want it to do something else.
 
-I'm labeling this as an "enterprise" message queue not because of its massive scale/bandwidth, but because it is a data-processing-oriented message queue.  
-I.e., it is for permanent data stores, not speed-handling on live events.
+At present, it uses SQLite as the storage engine.
+It is setup to make that easy to override in the future (should work fine for external MySQL and PostgreSQL implementations), but using SQLite means that it can be deployed in a self-contained manner.
 
 ## API
 
@@ -96,3 +97,28 @@ Open questions
 * Kubernetes API resources and/or controller mechanisms?
 * Have subscriptions which can automatically kick-off jobs, or automatically scale jobs to handle message processing
 * Have docker images which publish or process messages with as little configuration as possible.  Perhaps have a script add-on to a controller mechanism.
+
+## Motivation for the Project
+
+This is a new enterprise message queue.
+I know there's already a lot of them around.
+I wrote this one for a few reasons:
+
+1. Most message queues are a pain to install and get running.
+2. Most message queues don't realize that all other queue types are just degenerate forms of a stored pub/sub queue.
+3. I couldn't stop thinking about it.
+
+This does not aim to be the fastest or handle the most messages.
+Its first claim to fame will be that it is dead simple to install and very reliable for small to medium sizes workloads.
+Whether or not it goes beyond that, we'll see.
+
+The goal will be for usage in a private Kubernetes network, though it should be runnable without Kubernetes as well.
+
+I'm labeling this as an "enterprise" message queue not because of its massive scale/bandwidth, but because it is a data-processing-oriented message queue.  
+I.e., it is for permanent data stores, not speed-handling on live events.
+
+## Thanks
+
+Thanks to Vectortoons for providing the logos through Wikimedia Commons:
+
+https://commons.wikimedia.org/wiki/File:Cartoon_Woman_Without_Money_Left_In_Her_Wallet.svg

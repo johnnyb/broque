@@ -14,7 +14,7 @@ class GenerateInitialTables < ActiveRecord::Migration[7.0]
       t.string :message_origination_reference
       t.string :message_reference
       t.string :publisher_uid
-      t.blob :message
+      t.text :message
 
       t.timestamps
     end

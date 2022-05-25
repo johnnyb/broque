@@ -148,6 +148,7 @@ GEM
     sqlite3 (1.4.2)
     strscan (3.0.3)
     thor (1.2.1)
+    timecop (0.9.5)
     timeout (0.2.0)
     tzinfo (2.0.4)
       concurrent-ruby (~> 1.0)
@@ -165,6 +166,7 @@ DEPENDENCIES
   puma (~> 5.0)
   rails (~> 7.0.3)
   sqlite3 (~> 1.4)
+  timecop
   tzinfo-data
 
 RUBY VERSION

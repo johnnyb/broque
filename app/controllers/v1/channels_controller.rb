@@ -12,7 +12,7 @@ class V1::ChannelsController < ApplicationController
 			"force_message_expiration_time", 
 			"default_max_reads", 
 			"default_read_timeout"
-		))
+		).permit!)
 		render :json => @channel
 	end
 

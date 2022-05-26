@@ -14,7 +14,7 @@ class V1::CursorsController < ApplicationController
 			"last_message_id",
 			"default_max_reads",
 			"default_read_timeout"
-		))
+		).permit!)
 
 		render :json => render_cursor_json(@message_cursor)
 	end

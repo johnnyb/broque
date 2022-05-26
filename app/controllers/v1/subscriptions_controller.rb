@@ -10,7 +10,7 @@ class V1::SubscriptionsController < ApplicationController
 			"last_message_id",
 			"default_max_reads",
 			"default_read_timeout"
-		))
+		).permit!)
         render :json => render_subscription_json(@subscription)
 	end
 

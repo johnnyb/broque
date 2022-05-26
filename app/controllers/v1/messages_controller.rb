@@ -4,7 +4,7 @@ class V1::MessagesController < ApplicationController
     def index
 		raise "Cursor not found" if @message_cursor.nil?
 		should_update_cursor = true
-		autoremove = interpret_boolean(params[:autoremove])
+		autocomplete = interpret_boolean(params[:autocomplete])
 		max_messages = params[:max_messages] || @message_cursor.default_max_messages
 
         MessageCursor.transaction do
@@ -14,15 +14,15 @@ class V1::MessagesController < ApplicationController
             @messages = Message.available_to_cursor(@message_cursor).limit(max_messages)
 
 			# Mark them as being read
-			if autoremove
-				# On autoremove, if there is an outstanding reading for this message, delete it
+			if autocomplete
+				# On autocomplete, if there is an outstanding reading for this message, delete it
 				@messages.each do |msg|
 					reading = @message_cursor.active_readings.where(
 						:message => msg
 					).delete_all
 				end
 			else
-				# On non-autoremove, create an "active reading" for each message
+				# On non-autocomplete, create an "active reading" for each message
 				@messages.each do |msg|
 					reading = @message_cursor.active_readings.find_or_create_by(
 						:message => msg

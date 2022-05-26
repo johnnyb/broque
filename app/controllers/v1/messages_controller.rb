@@ -132,7 +132,7 @@ class V1::MessagesController < ApplicationController
     end
 
 	def render_message_json(msg, opts = {})
-		return msg.as_json(:only => [:id, :publisher_uid, :created_at, :updated_at]) if opts[:headers_only]
+		return msg.as_json(:only => [:id, :publisher_uid, :created_at, :updated_at, :message_reference, :message_origination_reference]) if opts[:headers_only]
 		return msg.as_json(:methods => [:metadata])
 	end
 end

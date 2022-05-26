@@ -92,18 +92,22 @@ class V1::MessagesController < ApplicationController
 
     def create
         Message.transaction do
-            @message = @channel.messages.create!(
-                :message_reference => SecureRandom.uuid,
-                :message_origination_reference => (params[:message_origination_reference] || SecureRandom.uuid),
-                :publisher_uid => current_uid,
-                :message => params[:message]
-            )
-            (params[:metadata] || {}).each do |k, v|
-                @message.message_metadata.create!(
-                    :key => k, 
-                    :value => v
-                )
-            end
+            @message = @channel.messages.find_or_create_by(
+				# This is the client's non-duplication ID, unique for the channel (auto-created by us if not supplied)
+                :message_origination_reference => (params[:message_origination_reference] || SecureRandom.uuid), 
+            ) do |rec|
+				rec.message = params[:message]
+				rec.publisher_uid = current_uid 
+				# This is our internal non-duplication ID, unique for whole system
+				rec.message_reference = SecureRandom.uuid
+
+				(params[:metadata] || {}).each do |k, v|
+					rec.message_metadata.build(
+						:key => k, 
+						:value => v
+					)
+				end	
+			end
         end 
 
         render :json => render_message_json(@message, :headers_only => true)

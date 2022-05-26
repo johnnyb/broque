@@ -89,6 +89,48 @@ class BasicFlowTest < ActionDispatch::IntegrationTest
 		Channel.clean_expired_messages!
 		new_new_count = ch.messages.count 
 		assert(new_new_count != new_count)
+	end
 
+	test "Metadata test" do
+		chname = "MetaCh#{rand(1000)}"
+		process(:post, "/v1/channels/#{chname}/messages", :params => { :message => "hello", "metadata[foo]" => "bar", "metadata[hello]" => "there" })
+		assert_response(:success)
+		result = response.parsed_body
+		process(:get, "/v1/channels/#{chname}/messages/#{result["id"]}")
+		assert_response(:success)
+		result = response.parsed_body
+		assert_equal(result["message"], "hello")
+		assert_equal(result["metadata"], {"foo" => "bar", "hello" => "there"})
+	end
+
+	test "Originator Reference test" do 
+		chname = "OrigCh#{rand(1000)}"
+		process(:post, "/v1/channels/#{chname}/messages", :params => { :message => "hello", :message_origination_reference => "asdf"})
+		assert_response(:success)
+		orig_response = response.parsed_body
+
+		process(:post, "/v1/channels/#{chname}/messages", :params => { :message => "hello2", :message_origination_reference => "asdf"})
+		assert_response(:success)
+		assert_equal(orig_response, response.parsed_body)
+
+		process(:post, "/v1/channels/#{chname}/messages", :params => { :message => "hello3", :message_origination_reference => "asdf"})
+		assert_response(:success)
+		assert_equal(orig_response, response.parsed_body)
+
+		process(:post, "/v1/channels/#{chname}/messages", :params => { :message => "hello4", :message_origination_reference => "asdf2"})
+		assert_response(:success)
+		assert_not_equal(orig_response, response.parsed_body)
+
+		process(:post, "/v1/channels/#{chname}/messages", :params => { :message => "hello5"})
+		assert_response(:success)
+		assert_not_equal(orig_response, response.parsed_body)
+		new_body = response.parsed_body
+
+		process(:post, "/v1/channels/#{chname}/messages", :params => { :message => "hello6"})
+		assert_response(:success)
+		assert_not_equal(new_body, response.parsed_body)
+
+		ch = Channel.where(:name => chname).first
+		assert_equal(ch.messages.count, 4)
 	end
 end

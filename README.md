@@ -26,7 +26,7 @@ There are a few basic URL structures:
 1. `/v1/channels/CHANNEL-NAME/messages`: POST-ing to this will create a message in the specified channel.  The channel does NOT have to have already existed (though it can be created/configured with a POST to `/v1/channels`).
 2. `/v1/channels/CHANNEL-NAME/subscriptions/SUBSCRIPTION-NAME/messages`: retrieve messages from a named subscription on a channel (defaults to 100 messages at a time).  The subscription (nor the channel) does NOT have to have already existed (though it can be created/configured with a POST to `/v1/channels/CHANNEL-NAME/subscriptions`).
 3. `/v1/channels/CHANNEL-NAME/cursors/CURSORID/messages`: retrieve messages from a cursor.  The cursor DOES need to be created with a POST to `/v1/channels/CHANNEL-NAME/cursors`.  
-4. `/v1/channels/CHANNEL-NAME/subscriptions/SUBSCRIPTION-NAME/messages/MSGID/complete`: PUT-ing to this will mark the message as being finished.  Otherwise, in 30 seconds, the message will be available again.  If you read the message with \icode{autoremove} set to true, you can skip this step.
+4. `/v1/channels/CHANNEL-NAME/subscriptions/SUBSCRIPTION-NAME/messages/MSGID/complete`: PUT-ing to this will mark the message as being finished.  Otherwise, in 30 seconds, the message will be available again.  If you read the message with \icode{autocomplete} set to true, you can skip this step.
 
 An example interactive session using CURL:
 

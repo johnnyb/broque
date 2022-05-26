@@ -34,6 +34,14 @@ class BasicFlowTest < ActionDispatch::IntegrationTest
 		get "#{sub2path}/messages", :params => { :autocomplete => should_autocomplete }
 		assert_response(:success)
 		assert(response.parsed_body.size == 50)
+		# Make sure we are getting a body (on this subscription, all messages should be unique and contain a 2)
+		uniqs = {}
+		response.parsed_body.each do |msgdata|
+			msg = msgdata["message"]
+			uniqs[msg] = true 
+			assert(msg.include?(" 2 "))
+		end
+		assert(uniqs.size == 50)
 
 		# Both subs should get all new messages
 		loadqueue(chname, 10, "3")
@@ -108,6 +116,8 @@ class BasicFlowTest < ActionDispatch::IntegrationTest
 		process(:post, "/v1/channels/#{chname}/messages", :params => { :message => "hello", :message_origination_reference => "asdf"})
 		assert_response(:success)
 		orig_response = response.parsed_body
+		assert_not_empty(orig_response["message_reference"])
+		assert_equal(orig_response["message_origination_reference"], "asdf")
 
 		process(:post, "/v1/channels/#{chname}/messages", :params => { :message => "hello2", :message_origination_reference => "asdf"})
 		assert_response(:success)

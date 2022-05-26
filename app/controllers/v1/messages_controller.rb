@@ -96,7 +96,7 @@ class V1::MessagesController < ApplicationController
                 :message_reference => SecureRandom.uuid,
                 :message_origination_reference => (params[:message_origination_reference] || SecureRandom.uuid),
                 :publisher_uid => current_uid,
-                :message => params[:message] || request.raw_post
+                :message => params[:message]
             )
             (params[:metadata] || {}).each do |k, v|
                 @message.message_metadata.create!(

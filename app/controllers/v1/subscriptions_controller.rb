@@ -3,13 +3,6 @@ class V1::SubscriptionsController < ApplicationController
 
     def create
 		update
-        Subscription.transaction do 
-			if params[:last_message_id].present?
-				@subscription.last_message_id = params[:last_message_id]
-				@subscription.save!
-			end
-        end
-        render :json => render_subscription_json(@subscription)
     end
 
 	def update
@@ -18,7 +11,7 @@ class V1::SubscriptionsController < ApplicationController
 			"default_max_reads",
 			"default_read_timeout"
 		))
-		render :json => @subscription
+        render :json => render_subscription_json(@subscription)
 	end
 
 	def destroy

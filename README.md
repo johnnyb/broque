@@ -18,6 +18,16 @@ You have to configure the channel if you want it to do something else.
 At present, it uses SQLite as the storage engine.
 It is setup to make that easy to override in the future (should work fine for external MySQL and PostgreSQL implementations), but using SQLite means that it can be deployed in a self-contained manner.
 
+## Installing in Kubernetes
+
+To install, simply run
+
+```
+kubectl apply -f https://raw.githubusercontent.com/johnnyb/broque/main/deploy/simple.yaml
+```
+
+Other common deployment configurations are available in the `deploy` folder, or you can use them to create your own!
+
 ## API
 
 The API is straightforward.

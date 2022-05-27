@@ -1,0 +1,30 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: broque-deployment
+spec:
+  replicas: 1
+  selector:
+    matchLabels:
+      app: broque
+  template:
+    metadata:
+      labels:
+        app: broque
+    spec:
+      containers:
+        - name: broque
+          image: johnnyb61820/broque:0.0.2
+          ports:
+            - containerPort: 3000
+---
+apiVersion: v1
+kind: Service
+metadata:
+  name: broque
+spec:
+  selector:
+    app: broque
+  ports:
+    - targetPort: 3000  
+      port: 80

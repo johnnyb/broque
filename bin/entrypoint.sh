@@ -10,4 +10,5 @@ if [ "$MODE" = "shell" ]; then
   exec /bin/bash
 fi
 
+bundle exec rake db:migrate
 exec bundle exec rails server

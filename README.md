@@ -94,6 +94,7 @@ The following environment variables are supported:
 
 * `AUTH_METHOD`: `kubernetes` or `custom`.  Leaving blank makes all UIDs nil.
 * `AUTH_CUSTOM_ENDPOINT`: If `AUTH_METHOD` is `custom`, this is the endpoint to check.  Performs a GET request to the endpoint with the authorization header copied.  Expects a JSON object with a `uid` field.
+* `AUTH_CACHE_EXPIRATION`: How long to cache auth header results (in seconds).  Defaults to 900 seconds (15 minutes).
 
 ## Current Plans
 

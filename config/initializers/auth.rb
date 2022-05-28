@@ -12,4 +12,4 @@ case ENV["AUTH_METHOD"].to_s.downcase
             auth_plugin = Auth::Custom.new(ENV["AUTH_CUSTOM_ENDPOINT"])
 end
 ApplicationController.auth_plugin = auth_plugin
-ApplicationController.token_caching_time = (ENV["AUTH_TOKEN_CACHE_EXPIRATION"] || 900).to_i.seconds
+ApplicationController.auth_cache_expiration = (ENV["AUTH_CACHE_EXPIRATION"] || 900).to_i.seconds

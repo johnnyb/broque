@@ -88,6 +88,13 @@ Right now, I'm only doing a REST-based API.
 Currently, it is unauthenticated.
 I plan on adding authentication, and the first aspect of that will be Kubernetes authentication.
 
+## Configuration
+
+The following environment variables are supported:
+
+* `AUTH_METHOD`: `kubernetes` or `custom`.  Leaving blank makes all UIDs nil.
+* `AUTH_CUSTOM_ENDPOINT`: If `AUTH_METHOD` is `custom`, this is the endpoint to check.  Performs a GET request to the endpoint with the authorization header copied.  Expects a JSON object with a `uid` field.
+
 ## Current Plans
 
 1. Get this running in a Pod container ready for Kubernetes

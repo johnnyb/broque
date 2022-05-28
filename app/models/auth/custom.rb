@@ -10,8 +10,8 @@ module Auth
             self.endpoint = auth_endpoint
         end
 
-        def uid_for_token(tok)
-            self.class.get(endpoint, :headers => {"Authorization" => "Bearer #{tok}"}).parsed_response["uid"]
+        def uid_for_header(hdr)
+            self.class.get(endpoint, :headers => {"Authorization" => hdr}).parsed_response["uid"]
         end
     end
 end

@@ -15,5 +15,10 @@ module Auth
         def uid_for_token(tok)
             user_data_for_token(tok)["username"]
         end
+
+        def uid_for_header(hdr)
+            tok = request.headers["Authorization"].to_s.split(/\s+/)[1]
+            return uid_for_token(tok)
+        end
     end
 end

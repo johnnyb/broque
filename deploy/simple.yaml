@@ -1,3 +1,31 @@
+## Main broQue Service Account
+apiVersion: v1
+kind: ServiceAccount
+metadata:
+  name: broque
+---
+apiVersion: rbac.authorization.k8s.io/v1
+kind: Role
+metadata:
+  name: broke-server
+rules:
+  - apiGroups: ["authentication.k8s.io"]
+    resources: ["tokenreviews"]
+    verbs: ["get", "list", "watch", "create", "update", "patch", "delete"]
+---
+apiVersion: rbac.authorization.k8s.io/v1
+kind: ClusterRoleBinding
+metadata:
+  name: broque-server
+subjects:
+  - kind: ServiceAccount
+    name: broque
+roleRef:
+  kind: ClusterRole
+  name: system:auth-delegator
+  apiGroup: rbac.authorization.k8s.io
+---
+# Main broQue application
 apiVersion: apps/v1
 kind: Deployment
 metadata:
@@ -12,6 +40,7 @@ spec:
       labels:
         app: broque
     spec:
+      serviceAccount: broque
       containers:
         - name: broque
           image: johnnyb61820/broque:0.0.3
@@ -28,3 +57,51 @@ spec:
   ports:
     - targetPort: 3000  
       port: 80
+---
+## broQue Operator
+apiVersion: v1
+kind: ServiceAccount
+metadata:
+  name: broque-operator
+---
+apiVersion: rbac.authorization.k8s.io/v1
+kind: Role
+metadata:
+  name: broque-operator
+rules:
+  - apiGroups: [""]
+    resources: ["*"]
+    verbs: ["get", "watch", "list"]
+---
+apiVersion: rbac.authorization.k8s.io/v1
+kind: RoleBinding
+metadata:
+  name: broque-operator
+subjects:
+  - kind: ServiceAccount
+    name: broque-operator
+roleRef:
+  kind: Role
+  name: broque-operator
+  apiGroup: rbac.authorization.k8s.io
+---
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: broque-operator-deployment
+spec:
+  replicas: 1
+  selector:
+    matchLabels:
+      app: broque-operator
+  template:
+    metadata:
+      labels:
+        app: broque-operator
+    spec:
+      serviceAccount: broque-operator
+      containers:
+        - name: broque-operator
+          image: johnnyb61820/broque:0.0.3
+          command: 
+            - operator

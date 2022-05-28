@@ -22,6 +22,4 @@ class V1::ChannelsController < ApplicationController
         @channel = Channel.autocreating_name_lookup(current_uid, params[:id])
         raise "Channel not found" if @channel.nil?
     end
-
-
 end

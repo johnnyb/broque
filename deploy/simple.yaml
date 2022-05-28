@@ -3,6 +3,7 @@ apiVersion: v1
 kind: ServiceAccount
 metadata:
   name: broque
+  namespace: default
 ---
 apiVersion: rbac.authorization.k8s.io/v1
 kind: ClusterRoleBinding
@@ -11,6 +12,7 @@ metadata:
 subjects:
   - kind: ServiceAccount
     name: broque
+    namespace: default
 roleRef:
   kind: ClusterRole
   name: system:auth-delegator
@@ -94,5 +96,5 @@ spec:
       containers:
         - name: broque-operator
           image: johnnyb61820/broque:0.0.3
-          command: 
+          args: 
             - operator

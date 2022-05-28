@@ -36,7 +36,7 @@ spec:
       serviceAccount: broque
       containers:
         - name: broque
-          image: johnnyb61820/broque:0.0.3
+          image: johnnyb61820/broque:0.0.4
           ports:
             - containerPort: 3000
 ---
@@ -95,6 +95,6 @@ spec:
       serviceAccount: broque-operator
       containers:
         - name: broque-operator
-          image: johnnyb61820/broque:0.0.3
+          image: johnnyb61820/broque:0.0.4
           args: 
             - operator

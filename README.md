@@ -88,13 +88,21 @@ Right now, I'm only doing a REST-based API.
 Currently, it is unauthenticated.
 I plan on adding authentication, and the first aspect of that will be Kubernetes authentication.
 
-## Configuration
+## Auth Configuration
 
 The following environment variables are supported:
 
 * `AUTH_METHOD`: `kubernetes` or `custom`.  Leaving blank makes all UIDs nil.
 * `AUTH_CUSTOM_ENDPOINT`: If `AUTH_METHOD` is `custom`, this is the endpoint to check.  Performs a GET request to the endpoint with the authorization header copied.  Expects a JSON object with a `uid` field.
 * `AUTH_CACHE_EXPIRATION`: How long to cache auth header results (in seconds).  Defaults to 900 seconds (15 minutes).
+* `AUTH_REQUIRED`: If set to a true-ish value, requires all connections to have a non-nil authentication result
+* `AUTH_MASTER_BOOSTRAP`: If an auth master bootstrap is *not* set, then any user can create/configure channels.  If an auth master *is* set, then only users with explicit permissions can create channels.  Then, the `AUTH_MASTER_BOOTSTRAP` account is the only initial account that can configure an account so that it can create channels.
+
+The basic idea of broQue is that, if this system is behind the firewall anyway, for many systems authentication/authorization just wouldn't be required, as it would be overkill for the given system.
+The next step up from that is simply requiring authentication for all connections.
+Then, for a "secure by default" setup, you can set an `AUTH_MASTER_BOOTSTRAP` account, which essentially designates an account to set up the security for the cluster, and doesn't allow any other accounts unless granted permissions by the bootstrap account.
+
+The goal is to provide simple access for those who just need a simple system, but be able to graduate to more complex and secure setups going forward, and also to keep global configuration options available as environment variables.
 
 ## Current Plans
 

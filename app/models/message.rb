@@ -11,6 +11,10 @@ class Message < ApplicationRecord
 		).or(where(:id => ActiveReading.needs_rereading_for_cursor(cursor))).order(:id => :asc)
 	}
 
+	scope :for_system_identifier, ->(ident){
+		where(:id => ident).or(where(:message_reference => ident))
+	}
+
 	# Force-stringify IDs
 	def as_json(opts = {})
 		data = super(opts)

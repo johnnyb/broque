@@ -87,7 +87,10 @@ class V1::MessagesController < ApplicationController
 	end
 
 	def complete
-		@message_cursor.active_readings.where(:message_id => params[:message_id]).delete_all
+		msg = @message_cursor.messages.for_system_identifier(params[:id]).first
+		unless msg.nil?
+			@message_cursor.active_readings.where(:message_id => msg.id).delete_all
+		end
 	end
 
     def create
@@ -127,7 +130,7 @@ class V1::MessagesController < ApplicationController
 		end
 
 		if params[:id].present?
-			@message = @channel.messages.find(params[:id])
+			@message = @channel.messages.for_system_identifier(params[:id]).first
 		end
     end
 

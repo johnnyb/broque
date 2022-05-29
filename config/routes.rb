@@ -19,6 +19,7 @@ Rails.application.routes.draw do
 						put :complete
 					end
 					collection do
+						get :pending_count
 						get :dead
 						put "dead/clear", :action => "clear_dlq"
 						put "dead/redrive", :action => "redrive_dlq"
@@ -34,6 +35,7 @@ Rails.application.routes.draw do
 						put :complete 
 					end
 					collection do
+						get :pending_count
 						get :dead
 						put "dead/clear", :action => "clear_dlq"
 						put "dead/redrive", :action => "redrive_dlq"

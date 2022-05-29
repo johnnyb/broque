@@ -22,6 +22,14 @@ class BasicFlowTest < ActionDispatch::IntegrationTest
 		sub2path = "#{chpath}/subscriptions/#{sub2name}"
 		process(:put, sub2path) 
 		assert_response(:success)
+
+		process(:get, "#{sub2path}/messages/pending_count")
+		assert_response(:success)
+		assert(response.parsed_body["count"] == 0)
+		
+		process(:get, "#{subpath}/messages/pending_count")
+		assert_response(:success)
+		assert(response.parsed_body["count"] == 10)
 		
 		# Load up the queue some more
 		loadqueue(chname, 50, "2")

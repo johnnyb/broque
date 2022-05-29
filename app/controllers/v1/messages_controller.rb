@@ -1,6 +1,11 @@
 class V1::MessagesController < ApplicationController
 	before_action :setup_message_cursor
 
+	def pending_count
+		count = Message.available_to_cursor(@message_cursor).count 
+		render :json => { :count => count }
+	end
+
     def index
 		raise "Cursor not found" if @message_cursor.nil?
 		should_update_cursor = true

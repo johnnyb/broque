@@ -66,6 +66,35 @@ class V1::MessagesController < ApplicationController
         end
     end
 
+	# Search all messages in the channel
+	def search
+		msgs = @channel.messages 
+		max_messages = params[:max_messages] || 100 
+		offset = params[:offset]
+		(params[:metadata] || {}).each do |k, v|
+			msgs = msgs.having_metadata(k, v)
+		end
+		origref = params[:message_origination_reference]
+		if origref.present?
+			msgs = msgs.where(:message_origination_reference => origref)
+		end
+
+		# FIXME do something with begin/end date and id
+		# sdate = params[:since]
+		# edate = params[:until]
+
+		if params[:publisher_uid].present?
+			msgs = msgs.where(:publisher_uid => params[:publisher_uid])
+		end
+
+		if offset > 0 
+			msgs = msgs.offset(offset)
+		end 
+		msgs = msgs.limit(max_messages)
+
+		render :json => render_message_json(msgs)
+	end
+
 	def dead
 		last_message_id = params[:last_message_id] || 0
 		max_messages = params[:max_messages] || @message_cursor.default_max_messages

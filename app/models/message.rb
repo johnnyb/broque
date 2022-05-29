@@ -15,6 +15,11 @@ class Message < ApplicationRecord
 		where(:id => ident).or(where(:message_reference => ident))
 	}
 
+	scope :having_metadata, ->(k, v){
+		# NOTE - should add channel ID to metadata to limit search further
+		where(:id => MessageMetadata.where(:key => k, :value => v).select(:message_id))
+	}
+
 	# Force-stringify IDs
 	def as_json(opts = {})
 		data = super(opts)

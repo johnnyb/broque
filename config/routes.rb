@@ -8,7 +8,11 @@ Rails.application.routes.draw do
 
 	namespace :v1 do 
 		resources :channels do
-			resources :messages 
+			resources :messages do
+				collection do
+					get :search 
+				end
+			end
 			
 			resources :subscriptions do
 				member do
@@ -19,6 +23,7 @@ Rails.application.routes.draw do
 						put :complete
 					end
 					collection do
+						put "receive", :action => "index"
 						get :pending_count
 						get :dead
 						put "dead/clear", :action => "clear_dlq"
@@ -35,6 +40,7 @@ Rails.application.routes.draw do
 						put :complete 
 					end
 					collection do
+						put "receive", :action => "index"
 						get :pending_count
 						get :dead
 						put "dead/clear", :action => "clear_dlq"

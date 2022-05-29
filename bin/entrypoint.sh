@@ -10,7 +10,7 @@ if [ "$MODE" = "shell" ]; then
 	exec /bin/bash
 fi
 if [ "$MODE" = "operator" ]; then
-	exec bundle exec rails runner -e KubernetesOperator.run
+	exec bundle exec rails runner Kubernetes::Operator.run
 fi
 
 bundle exec rake db:migrate

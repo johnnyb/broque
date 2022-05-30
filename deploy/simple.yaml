@@ -47,12 +47,22 @@ spec:
       serviceAccount: broque
       containers:
         - name: broque
-          image: johnnyb61820/broque:0.0.6
+          image: johnnyb61820/broque:0.0.7
           ports:
             - containerPort: 3000
+          env:
+            - name: DB_PASS
+              value: localpass
+        - name: postgres
+          image: postgres
           volumeMounts:
             - name: broque-data-volume
-              mountPath: /app/db/data
+              mountPath: /data
+          env:
+            - name: POSTGRES_PASSWORD
+              value: localpass
+            - name: PGDATA
+              value: /data/pgdata
       volumes:
         - name: broque-data-volume
           persistentVolumeClaim:
@@ -113,6 +123,6 @@ spec:
       serviceAccount: broque-operator
       containers:
         - name: broque-operator
-          image: johnnyb61820/broque:0.0.6
+          image: johnnyb61820/broque:0.0.7
           args: 
             - operator

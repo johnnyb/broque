@@ -53,10 +53,10 @@ spec:
           volumeMounts:
             - name: broque-data-volume
               mountPath: /app/db/data
-  volumes:
-    - name: broque-data-volume
-      persistentVolumeClaim:
-        claimName: broque-data
+      volumes:
+        - name: broque-data-volume
+          persistentVolumeClaim:
+            claimName: broque-data
 ---
 apiVersion: v1
 kind: Service

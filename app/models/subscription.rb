@@ -4,10 +4,13 @@ class Subscription < ApplicationRecord
 
 	scope :for_uid, ->(uid) { } # Not currently checking permissions
 
+	delegate :authentication_required?, :to => :channel
+	delegate :permission_required?, :to => :channel
+
 	def self.autocreating_name_lookup(channel, uid, name)
 		subscription = channel.subscriptions.for_uid(uid).where(:name => name).first
 		return subscription unless subscription.nil?
-		return nil unless has_permission?(uid, channel, :subscription_create)
+		return nil unless has_permission?(uid, :subscription_create, :channel)
 
 		last_message_id = channel.messages.last.try(:id)
 		message_cursor = channel.message_cursors.create!(

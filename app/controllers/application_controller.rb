@@ -18,8 +18,8 @@ class ApplicationController < ActionController::API
 		end
 	end
 
-	def has_permission?(ctx, perm)
-		return true
+	def has_permission?(perm, obj = nil)
+		return Permission.has_permission?(current_uid, perm, obj)
 	end
 
 	### Misc

@@ -10,7 +10,7 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema[7.0].define(version: 2022_05_30_140750) do
+ActiveRecord::Schema[7.0].define(version: 2022_05_30_150114) do
   create_table "active_readings", force: :cascade do |t|
     t.integer "message_cursor_id"
     t.integer "message_id"
@@ -35,6 +35,8 @@ ActiveRecord::Schema[7.0].define(version: 2022_05_30_140750) do
     t.integer "default_read_timeout"
     t.datetime "created_at", null: false
     t.datetime "updated_at", null: false
+    t.boolean "authentication_required", default: false
+    t.boolean "permission_required", default: false
     t.index ["name"], name: "index_channels_on_name", unique: true
     t.index ["owner_uid"], name: "index_channels_on_owner_uid"
   end
@@ -73,6 +75,15 @@ ActiveRecord::Schema[7.0].define(version: 2022_05_30_140750) do
     t.index ["channel_id", "message_origination_reference"], name: "index_messages_on_channel_id_and_message_origination_reference", unique: true
     t.index ["channel_id"], name: "index_messages_on_channel_id"
     t.index ["message_reference"], name: "index_messages_on_message_reference", unique: true
+  end
+
+  create_table "permissions", force: :cascade do |t|
+    t.string "permission_on_type"
+    t.integer "permission_on_id"
+    t.string "uid"
+    t.string "permission"
+    t.index ["permission_on_id"], name: "index_permissions_on_permission_on_id"
+    t.index ["uid"], name: "index_permissions_on_uid"
   end
 
   create_table "subscriptions", force: :cascade do |t|

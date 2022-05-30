@@ -3,14 +3,20 @@ class Channel < ApplicationRecord
 	has_many :message_cursors 
 	has_many :active_readings
 	has_many :subscriptions
+	has_many :permissions, :as => :permission_on
 
 	scope :for_uid, ->(uid) { } # Not currently checking permissions
 
 	def self.autocreating_name_lookup(uid, name)
 		ch = for_uid(uid).where(:name => name).first
 		return ch unless ch.nil?
-		return nil unless has_permission?(uid, nil, :channel_create)
-		return Channel.create!(:name => name, :owner_uid => uid)
+		return nil unless has_permission?(uid, [:channel_admin, :global_admin])
+		return Channel.create!(
+			:name => name, 
+			:owner_uid => uid,
+			:permission_required => Permission.global_permission_object.permission_required?,
+			:authentication_required => Permission.global_permission_object.authentication_required?
+		)
 	end
 
 	def self.clean_expired_messages!

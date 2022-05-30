@@ -6,6 +6,9 @@ class MessageCursor < ApplicationRecord
 
 	scope :for_uid, ->(uid) { } # Not currently checking permissions
 
+	delegate :authentication_required?, :to => :channel
+	delegate :permission_required?, :to => :channel
+
 	def default_max_messages
 		100
 	end

@@ -87,8 +87,8 @@ class V1::MessagesController < ApplicationController
 			msgs = msgs.where(:publisher_uid => params[:publisher_uid])
 		end
 
-		if offset > 0 
-			msgs = msgs.offset(offset)
+		if offset.present?
+			msgs = msgs.offset(offset.to_i)
 		end 
 		msgs = msgs.limit(max_messages)
 

@@ -47,7 +47,7 @@ class BasicFlowTest < ActionDispatch::IntegrationTest
 		response.parsed_body.each do |msgdata|
 			msg = msgdata["message"]
 			uniqs[msg] = true 
-			assert(msg.include?(" 2 "))
+			assert(msg.include?("2 "))
 		end
 		assert(uniqs.size == 50)
 

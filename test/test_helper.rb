@@ -13,7 +13,7 @@ class ActiveSupport::TestCase
 
 	def loadqueue(name, num_messages, tag="", opts = {})
 		1.upto(num_messages) do |idx|
-			process(:post, "/v1/channels/#{name}/messages", :params => {:message => "TestMessage #{tag} #{idx}"})
+			process(:post, "/v1/channels/#{name}/messages", :params => {:message => "#{tag} #{idx}"})
 		end
 	end
 
@@ -21,4 +21,13 @@ class ActiveSupport::TestCase
 		process(:get, path, opts)
 	end
 
+	setup do
+		ApplicationController.auth_plugin = FakeAuth.new
+	end
+end
+
+class FakeAuth
+	def uid_for_header(hdr)
+		return hdr
+	end
 end

@@ -72,7 +72,7 @@ class V1::MessagesController < ApplicationController
 		max_messages = params[:max_messages] || 100 
 		offset = params[:offset]
 		(params[:metadata] || {}).each do |k, v|
-			msgs = msgs.having_metadata(k, v)
+			msgs = msgs.having_metadata(@channel, k, v)
 		end
 		origref = params[:message_origination_reference]
 		if origref.present?
@@ -140,6 +140,7 @@ class V1::MessagesController < ApplicationController
 
 				(params[:metadata] || {}).each do |k, v|
 					rec.message_metadata.build(
+						:channel => @channel,
 						:key => k, 
 						:value => v
 					)

@@ -10,7 +10,7 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema[7.0].define(version: 2022_05_24_033456) do
+ActiveRecord::Schema[7.0].define(version: 2022_05_30_140750) do
   create_table "active_readings", force: :cascade do |t|
     t.integer "message_cursor_id"
     t.integer "message_id"
@@ -55,6 +55,9 @@ ActiveRecord::Schema[7.0].define(version: 2022_05_24_033456) do
     t.integer "message_id"
     t.string "key"
     t.string "value"
+    t.integer "channel_id"
+    t.index ["channel_id", "key", "value"], name: "index_message_metadata_on_channel_id_and_key_and_value"
+    t.index ["channel_id"], name: "index_message_metadata_on_channel_id"
     t.index ["message_id"], name: "index_message_metadata_on_message_id"
   end
 

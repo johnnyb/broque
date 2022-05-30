@@ -23,7 +23,11 @@ kind: PersistentVolumeClaim
 metadata:
   name: broque-data
 spec:
-  capacity: 1Gi
+  accessModes:
+  - ReadWriteOnce
+  resources:
+    requests:
+      storage: 1Gi
 ---
 # Main broQue application
 apiVersion: apps/v1

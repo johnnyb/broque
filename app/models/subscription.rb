@@ -10,7 +10,7 @@ class Subscription < ApplicationRecord
 	def self.autocreating_name_lookup(channel, uid, name)
 		subscription = channel.subscriptions.for_uid(uid).where(:name => name).first
 		return subscription unless subscription.nil?
-		return nil unless has_permission?(uid, :subscription_create, :channel)
+		return nil unless has_permission?(uid, [:subscription_create, :channel_admin], channel)
 
 		last_message_id = channel.messages.last.try(:id)
 		message_cursor = channel.message_cursors.create!(

@@ -1,5 +1,7 @@
 class V1::CursorsController < ApplicationController
 	before_action :setup_cursor 
+	before_action :check_reader_perms
+	before_action :check_admin_perms, :only => [:create, :destroy]
 
 	def create
 		@message_cursor = @channel.message_cursors.create!(
@@ -34,6 +36,14 @@ class V1::CursorsController < ApplicationController
 	end
 
 	protected
+
+	def check_reader_perms
+		raise "Invalid user" unless has_permission?(:reader, @message_cursor) || has_permission([:channel_admin, :subscription_admin], @channel)
+	end 
+
+	def check_admin_perms
+		raise "Invalid user" unless has_permission?([:channel_admin, :subscription_admin], @channel)
+	end
 
 	def render_cursor_json(c)
 		return c

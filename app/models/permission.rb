@@ -3,7 +3,9 @@
 #    * :channel_admin
 #    * :global_admin
 #  * CHANNEL
+#    * :channel_admin
 #    * :subscription_admin
+#    * :writer
 #  * SUBSCRIPTION / MESSAGE_CURSOR
 #    * :reader
 

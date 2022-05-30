@@ -1,5 +1,7 @@
 class V1::SubscriptionsController < ApplicationController
-	before_action :setup_channel 
+	before_action :setup_subscription
+	before_action :check_subscription_admin_perms, :only => [:create, :update, :destroy]
+	before_action :check_subscription_reader_perms
 
     def create
 		update
@@ -36,11 +38,19 @@ class V1::SubscriptionsController < ApplicationController
 
 	protected
 
+	def check_subscription_admin_perms
+		raise "Invalid user" unless has_permission?([:channel_admin, :subscription_admin], @channel)
+	end
+
+	def check_subscription_reader_perms 
+		raise "Invalid user" unless has_permission?([:channel_admin, :subscription_admin], @channel) || has_permission([:reader], @subscription)
+	end
+
 	def render_subscription_json(subscr)
 		return subscr.as_json().merge(subscr.default_message_cursor.as_json)
 	end
 
-	def setup_channel
+	def setup_subscription
         @channel = Channel.autocreating_name_lookup(current_uid, params[:channel_id])
         raise "Channel not found" if @channel.nil?
 

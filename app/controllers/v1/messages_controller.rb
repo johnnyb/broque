@@ -1,5 +1,7 @@
 class V1::MessagesController < ApplicationController
 	before_action :setup_message_cursor
+	before_action :check_reader_perms, :except => [:create]
+	before_action :check_writer_perms, :only => [:create]
 
 	def pending_count
 		count = Message.available_to_cursor(@message_cursor).count 
@@ -152,6 +154,14 @@ class V1::MessagesController < ApplicationController
     end
 
 	protected 
+
+	def check_reader_perms 
+		raise "Invalid user" unless has_permission?([:channel_admin, :subscription_admin], @channel) || has_permission?([:reader], @message_cursor)
+	end 
+
+	def check_writer_perms 
+		raise "Invalid user" unless has_permission?([:channel_admin, :writer], @channel)
+	end
 
 	def setup_message_cursor
 		@channel = Channel.autocreating_name_lookup(current_uid, params[:channel_id])

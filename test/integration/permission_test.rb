@@ -44,7 +44,7 @@ class PermissionTest < ActionDispatch::IntegrationTest
 		basic_channel_perm_test({
 			"myuser" => :success,
 			"myuser2" => :success,
-			nil => 401,
+			nil => 403,
 			@owner_uid => :success
 		})
 	end
@@ -52,9 +52,9 @@ class PermissionTest < ActionDispatch::IntegrationTest
 	test "Closed GPO" do
 		Permission.global_permission_object = @gpo_closed
 		basic_channel_perm_test({
-			"myuser" => 401,
-			"myuser2" => 401,
-			nil => 401,
+			"myuser" => 403,
+			"myuser2" => 403,
+			nil => 403,
 			@owner_uid => :success
 		})
 	end

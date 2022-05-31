@@ -22,6 +22,10 @@ class ApplicationController < ActionController::API
 		return Permission.has_permission?(current_uid, perm, obj)
 	end
 
+	def render_unauthorized(msg = "User does not have permission for this action")
+		render(:json => {:error => "Unauthorized", :message => msg}, :status => 403)
+	end
+
 	### Misc
 	def interpret_boolean(val)
 		ActiveModel::Type::Boolean.new.cast(val)

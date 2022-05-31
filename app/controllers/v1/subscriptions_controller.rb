@@ -52,9 +52,15 @@ class V1::SubscriptionsController < ApplicationController
 
 	def setup_subscription
         @channel = Channel.autocreating_name_lookup(current_uid, params[:channel_id])
-        raise "Channel not found" if @channel.nil?
+		if @channel.nil?
+			render_unauthorized
+			return
+		end
 
 		@subscription = Subscription.autocreating_name_lookup(@channel, current_uid, params[:id])
-		raise "Subscription not found" if @subscription.nil?
+		if @subscription.nil?
+			render_unauthorized
+			return
+		end
     end
 end

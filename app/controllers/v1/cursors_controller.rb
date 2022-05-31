@@ -38,11 +38,11 @@ class V1::CursorsController < ApplicationController
 	protected
 
 	def check_reader_perms
-		raise "Invalid user" unless has_permission?(:reader, @message_cursor) || has_permission([:channel_admin, :subscription_admin], @channel)
+		render_unauthorized unless has_permission?(:reader, @message_cursor) || has_permission([:channel_admin, :subscription_admin], @channel)
 	end 
 
 	def check_admin_perms
-		raise "Invalid user" unless has_permission?([:channel_admin, :subscription_admin], @channel)
+		render_unauthorized unless has_permission?([:channel_admin, :subscription_admin], @channel)
 	end
 
 	def render_cursor_json(c)
@@ -51,7 +51,10 @@ class V1::CursorsController < ApplicationController
 
 	def setup_cursor 
         @channel = Channel.autocreating_name_lookup(current_uid, params[:channel_id])
-        raise "Channel not found" if @channel.nil?
+		if @channel.nil?
+			render_unauthorized 
+			return
+		end
 
 		@message_cursor = @channel.message_cursor.for_uid(current_uid).find(params[:id]) unless params[:id].nil?
 	end

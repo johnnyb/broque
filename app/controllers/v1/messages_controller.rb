@@ -156,17 +156,20 @@ class V1::MessagesController < ApplicationController
 	protected 
 
 	def check_reader_perms 
-		raise "Invalid user" unless has_permission?([:channel_admin, :subscription_admin], @channel) || has_permission?([:reader], @message_cursor)
+		render_unauthorized unless has_permission?([:channel_admin, :subscription_admin], @channel) || has_permission?([:reader], @message_cursor)
 	end 
 
 	def check_writer_perms 
-		raise "Invalid user" unless has_permission?([:channel_admin, :writer], @channel)
+		render_unauthorized unless has_permission?([:channel_admin, :writer], @channel)
 	end
 
 	def setup_message_cursor
 		@channel = Channel.autocreating_name_lookup(current_uid, params[:channel_id])
-        raise "Channel not found" if @channel.nil?
-
+		if @channel.nil?
+			render_unauthorized 
+			return
+		end
+		
 		if params[:cursor_id].present?
 			@message_cursor = @channel.message_cursors.for_uid(current_uid).find(params[:cursor_id])
 		elsif params[:subscription_id].present?

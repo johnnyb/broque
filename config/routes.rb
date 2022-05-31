@@ -7,7 +7,10 @@ Rails.application.routes.draw do
 	get "/maintenance/periodic_maintenance", :to => "maintenance#periodic_maintenance"
 
 	namespace :v1 do 
+		resources :permissions
 		resources :channels do
+			resources :permissions
+
 			resources :messages do
 				collection do
 					get :search 
@@ -18,10 +21,14 @@ Rails.application.routes.draw do
 				member do
 					put :reset
 				end
+
+				resources :permissions
+
 				resources :messages do 
 					member do
 						put :complete
 					end
+					
 					collection do
 						put "receive", :action => "index"
 						get :pending_count
@@ -31,14 +38,19 @@ Rails.application.routes.draw do
 					end
 				end
 			end
+
 			resources :cursors do 
 				member do 
 					put :reset
 				end
+
+				resources :permissions
+
 				resources :messages do
 					member do 
 						put :complete 
 					end
+
 					collection do
 						put "receive", :action => "index"
 						get :pending_count

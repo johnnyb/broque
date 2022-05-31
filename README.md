@@ -15,8 +15,9 @@ The key differentiator of broQue is that ALL queues (we call them *channels*) ar
 This means that once a message is published, it is permanently available by default.
 You have to configure the channel if you want it to do something else.
 
-At present, it uses SQLite as the storage engine.
-It is setup to make that easy to override in the future (should work fine for external MySQL and PostgreSQL implementations), but using SQLite means that it can be deployed in a self-contained manner.
+At present, it uses PostgreSQL as the storage engine, by default in the same Pod.
+It is setup to make that easy to override in the future (should work fine for external MySQL and PostgreSQL implementations), but using PostgreSQL in the same Pod means that it can be deployed in a self-contained manner.
+Everything should be SQLite-compatible for testing, however, I have not been successful running SQLite in production at-all (though this could be a limitation of my knowledge of SQLite).
 
 ## Installing in Kubernetes
 

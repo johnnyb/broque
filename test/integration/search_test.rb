@@ -45,10 +45,10 @@ class SearchTest < ActionDispatch::IntegrationTest
 
 	test "Should do UID searches" do
 		1.upto(5) do |val|
-			process(:post, "/v1/channels/uidsearch/messages", :params => { :message => "Hello #{val}"}, :headers => { "Authorization" => "user1" })
+			process(:post, "/v1/channels/uidsearch/messages", :params => { :message => "Hello #{val}"}, :headers => { "Authorization" => auth_header_for_uid("user1") })
 		end
 		1.upto(7) do |val|
-			process(:post, "/v1/channels/uidsearch/messages", :params => { :message => "Hello #{val}"}, :headers => { "Authorization" => "user2" })
+			process(:post, "/v1/channels/uidsearch/messages", :params => { :message => "Hello #{val}"}, :headers => { "Authorization" => auth_header_for_uid("user2") })
 		end
 		process(:get, "/v1/channels/uidsearch/messages/search", :params => { :publisher_uid => "user1"})
 		assert_response(:success)

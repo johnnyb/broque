@@ -32,7 +32,13 @@ class Permission < ApplicationRecord
 
 	#### Use ENV Vars for Global Permissioning ####
 	def self.global_permission_object
-		return self
+		@gpo ||= self
+		return @gpo
+	end
+
+	# Mostly used for testing
+	def self.global_permission_object=(val)
+		@gpo = val
 	end
 
 	def self.authentication_required?

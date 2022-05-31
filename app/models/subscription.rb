@@ -2,13 +2,12 @@ class Subscription < ApplicationRecord
 	belongs_to :channel
 	belongs_to :default_message_cursor, :class_name => "MessageCursor", :foreign_key => "default_message_cursor_id", :dependent => :destroy
 
-	scope :for_uid, ->(uid) { } # Not currently checking permissions
-
 	delegate :authentication_required?, :to => :channel
 	delegate :permission_required?, :to => :channel
 
+	# NOTE - Only check permissions on creation
 	def self.autocreating_name_lookup(channel, uid, name)
-		subscription = channel.subscriptions.for_uid(uid).where(:name => name).first
+		subscription = channel.subscriptions.where(:name => name).first
 		return subscription unless subscription.nil?
 		return nil unless has_permission?(uid, [:subscription_create, :channel_admin], channel)
 

@@ -10,7 +10,7 @@
 #    * :reader
 
 class Permission < ApplicationRecord
-	belongs_to :permission_on, :polymorphic => true
+	belongs_to :permission_on, :polymorphic => true, :optional => true
 
 	def self.has_permission?(uid, perm, obj = nil)
 		perm_obj = obj == nil ? Permission.global_permission_object : obj
@@ -20,13 +20,7 @@ class Permission < ApplicationRecord
 		return true unless perm_obj.permission_required?
 		return true if perm_obj.owner_uid == uid
 		
-		search = Permission.where(:uid => uid, :permission => perm)
-		if obj.present?
-			search = search.where(:permission_on => obj)
-		else
-			search = search.where(:permission_on => nil)
-		end 
-
+		search = Permission.where(:uid => uid, :permission => perm, :permission_on => obj)
 		return !search.empty?
 	end
 

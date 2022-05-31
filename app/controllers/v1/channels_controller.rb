@@ -17,6 +17,10 @@ class V1::ChannelsController < ApplicationController
 		render :json => @channel
 	end
 
+	def show 
+		render :json => @channel
+	end
+
 	protected 
 
 	def check_channel_perms

@@ -5,10 +5,9 @@ class Channel < ApplicationRecord
 	has_many :subscriptions
 	has_many :permissions, :as => :permission_on
 
-	scope :for_uid, ->(uid) { } # Not currently checking permissions
-
+	# NOTE - Only check permissions on creation
 	def self.autocreating_name_lookup(uid, name)
-		ch = for_uid(uid).where(:name => name).first
+		ch = where(:name => name).first
 		return ch unless ch.nil?
 		return nil unless has_permission?(uid, [:channel_admin, :global_admin])
 		return Channel.create!(

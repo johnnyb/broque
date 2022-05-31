@@ -11,8 +11,8 @@ class PermissionTest < ActionDispatch::IntegrationTest
 		@gpo_authreq.authentication_required = true 
 	end
 
-	def basic_channel_perm_test(info)
-		ch = "open#{rand(1000)}"
+	def basic_channel_perm_test(info, ch = nil)
+		ch = "open#{rand(1000)}" if ch.nil?
 
 		desired_count = 0
 		info.each do |uid, expect|
@@ -29,7 +29,7 @@ class PermissionTest < ActionDispatch::IntegrationTest
 		assert_equal(desired_count, Channel.where(:name => ch).first.messages.count)
 	end
 
-	test "Open Permissions" do
+	test "Basics" do
 		Permission.global_permission_object = @gpo_open
 		basic_channel_perm_test({
 			"myuser" => :success, 
@@ -51,11 +51,40 @@ class PermissionTest < ActionDispatch::IntegrationTest
 
 	test "Closed GPO" do
 		Permission.global_permission_object = @gpo_closed
+
+		## By default, only the global owner can create channels
 		basic_channel_perm_test({
 			"myuser" => 403,
 			"myuser2" => 403,
 			nil => 403,
 			@owner_uid => :success
 		})
+
+		## By default, only the global owner can create channel admins
+		process(:post, "/v1/permissions", :params => { :uid => "myuser", :permission => :channel_admin })
+		assert_response(403)
+		process(:post, "/v1/permissions", :params => { :uid => "myuser", :permission => :channel_admin }, :headers => {"Authorization" => auth_header_for_uid("myuser2")})
+		assert_response(403)
+		process(:post, "/v1/permissions", :params => { :uid => "myuser", :permission => :channel_admin }, :headers => {"Authorization" => auth_header_for_uid(@owner_uid)})
+		assert_response(:success)
+
+		## Having channel admin doesn't give you permissions to add users to global perms
+		process(:post, "/v1/permissions", :params => { :uid => "myuser2", :permission => :channel_admin }, :headers => {"Authorization" => auth_header_for_uid("myuser")})
+		assert_response(403)
+		
+
+		## Should be able to create a channel with authorized user
+		ch = "closed#{rand(1000)}"
+		process(:get, "/v1/channels/#{ch}", :headers => { "Authorization" => auth_header_for_uid("myuser")})
+		assert_response(:success)
+
+		## Channel should only be available to creating user
+		basic_channel_perm_test({
+			"myuser" => :success,
+			"myuser2" => 403,
+			nil => 403,
+			@owner_uid => 403
+		}, ch)
+
 	end
 end

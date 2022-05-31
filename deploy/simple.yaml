@@ -46,13 +46,7 @@ spec:
     spec:
       serviceAccount: broque
       containers:
-        - name: broque
-          image: johnnyb61820/broque:0.0.7
-          ports:
-            - containerPort: 3000
-          env:
-            - name: DB_PASS
-              value: localpass
+        # Put PG container first in case there is any ordering imposed by K8s/kubelet
         - name: postgres
           image: postgres
           volumeMounts:
@@ -62,7 +56,18 @@ spec:
             - name: POSTGRES_PASSWORD
               value: localpass
             - name: PGDATA
-              value: /data/pgdata
+              value: /data/pgdata      
+        - name: broque
+          image: johnnyb61820/broque:0.0.8
+          ports:
+            - containerPort: 3000
+          env:
+            - name: DB_PASS
+              value: localpass
+          startupProbe:
+            tcpSocket: 
+              port: 3000
+            periodSeconds: 60
       volumes:
         - name: broque-data-volume
           persistentVolumeClaim:
@@ -123,6 +128,6 @@ spec:
       serviceAccount: broque-operator
       containers:
         - name: broque-operator
-          image: johnnyb61820/broque:0.0.7
+          image: johnnyb61820/broque:0.0.8
           args: 
             - operator

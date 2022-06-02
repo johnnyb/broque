@@ -36,6 +36,8 @@ metadata:
   name: broque-deployment
 spec:
   replicas: 1
+  strategy: 
+    type: Recreate
   selector:
     matchLabels:
       app: broque
@@ -58,7 +60,7 @@ spec:
             - name: PGDATA
               value: /data/pgdata      
         - name: broque
-          image: johnnyb61820/broque:0.0.8
+          image: johnnyb61820/broque:0.0.9
           ports:
             - containerPort: 3000
           env:
@@ -128,6 +130,6 @@ spec:
       serviceAccount: broque-operator
       containers:
         - name: broque-operator
-          image: johnnyb61820/broque:0.0.8
+          image: johnnyb61820/broque:0.0.9
           args: 
             - operator

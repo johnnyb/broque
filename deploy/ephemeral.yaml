@@ -18,17 +18,6 @@ roleRef:
   name: system:auth-delegator
   apiGroup: rbac.authorization.k8s.io
 ---
-apiVersion: v1
-kind: PersistentVolumeClaim
-metadata:
-  name: broque-data
-spec:
-  accessModes:
-  - ReadWriteOnce
-  resources:
-    requests:
-      storage: 10Gi
----
 # Main broQue application
 apiVersion: apps/v1
 kind: Deployment
@@ -48,34 +37,21 @@ spec:
     spec:
       serviceAccount: broque
       containers:
-        # Put PG container first in case there is any ordering imposed by K8s/kubelet
-        - name: postgres
-          image: postgres
-          volumeMounts:
-            - name: broque-data-volume
-              mountPath: /data
-          env:
-            - name: POSTGRES_PASSWORD
-              value: localpass
-            - name: PGDATA
-              value: /data/pgdata      
         - name: broque
           image: johnnyb61820/broque:0.1.1
           ports:
             - containerPort: 3000
           env:
-            - name: DB_PASS
-              value: localpass
+            - name: DB_ADAPTER
+              value: sqlite3
+            - name: DB_NAME
+              value: db/production.sqlite3
             - name: SECRET_KEY_BASE
               value: mysecret
           startupProbe:
             tcpSocket: 
               port: 3000
             periodSeconds: 60
-      volumes:
-        - name: broque-data-volume
-          persistentVolumeClaim:
-            claimName: broque-data
 ---
 apiVersion: v1
 kind: Service

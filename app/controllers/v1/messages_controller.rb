@@ -123,7 +123,7 @@ class V1::MessagesController < ApplicationController
 	end
 
 	def complete
-		msg = @message_cursor.messages.for_system_identifier(params[:id]).first
+		msg = @message_cursor.messages.for_system_identifier(params[:id]).order(:id => :desc).first
 		unless msg.nil?
 			@message_cursor.active_readings.where(:message_id => msg.id).delete_all
 		end
@@ -178,7 +178,7 @@ class V1::MessagesController < ApplicationController
 		end
 
 		if params[:id].present?
-			@message = @channel.messages.for_system_identifier(params[:id]).first
+			@message = @channel.messages.for_system_identifier(params[:id]).order(:id => desc).first
 		end
     end
 

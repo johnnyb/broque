@@ -7,7 +7,7 @@ class Channel < ApplicationRecord
 
 	# NOTE - Only check permissions on creation
 	def self.autocreating_name_lookup(uid, name)
-		ch = where(:name => name).first
+		ch = find_by(:name => name)
 		return ch unless ch.nil?
 		return nil unless has_permission?(uid, [:channel_admin, :global_admin])
 		return Channel.create!(

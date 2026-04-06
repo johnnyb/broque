@@ -7,7 +7,7 @@ class Subscription < ApplicationRecord
 
 	# NOTE - Only check permissions on creation
 	def self.autocreating_name_lookup(channel, uid, name)
-		subscription = channel.subscriptions.where(:name => name).first
+		subscription = channel.subscriptions.find_by(:name => name)
 		return subscription unless subscription.nil?
 		return nil unless has_permission?(uid, [:subscription_create, :channel_admin], channel)
 

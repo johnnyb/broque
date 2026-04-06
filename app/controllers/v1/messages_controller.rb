@@ -178,7 +178,7 @@ class V1::MessagesController < ApplicationController
 		end
 
 		if params[:id].present?
-			@message = @channel.messages.for_system_identifier(params[:id]).order(:id => desc).first
+			@message = @channel.messages.for_system_identifier(params[:id]).order(:id => :desc).first
 		end
     end
 

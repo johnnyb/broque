@@ -1,7 +1,7 @@
-FROM ruby:3
+FROM ruby:4
 
 # For startup script
-RUN apt update; apt install -y netcat
+RUN apt update; apt install -y netcat-traditional
 
 # For debugging
 RUN apt install -y vim postgresql-client 

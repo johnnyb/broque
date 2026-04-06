@@ -60,7 +60,7 @@ spec:
             - name: PGDATA
               value: /data/pgdata      
         - name: broque
-          image: johnnyb61820/broque:0.0.9
+          image: johnnyb61820/broque:0.1.0
           ports:
             - containerPort: 3000
           env:
@@ -130,6 +130,6 @@ spec:
       serviceAccount: broque-operator
       containers:
         - name: broque-operator
-          image: johnnyb61820/broque:0.0.9
+          image: johnnyb61820/broque:0.1.0
           args: 
             - operator

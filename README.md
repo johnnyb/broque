@@ -29,6 +29,13 @@ kubectl apply -f https://raw.githubusercontent.com/johnnyb/broque/main/deploy/si
 
 Other common deployment configurations are available in the `deploy` folder, or you can use them to create your own!
 
+If you just want a VERY SIMPLE deployment with ephemeral storage (no explicit size and will terminate on reboot) you can use the SQLite version with:
+
+```
+kubectl apply -f https://raw.githubusercontent.com/johnnyb/broque/main/deploy/ephemeral.yaml
+```
+
+
 ## API
 
 The API is straightforward.
